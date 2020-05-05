@@ -84,6 +84,7 @@
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <FrameLayout
+            android:layout_marginTop="24dp"
             android:id="@+id/frame_main_fragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
