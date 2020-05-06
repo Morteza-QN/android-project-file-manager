@@ -15,14 +15,14 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="24dp">
 
         <ImageView
             android:id="@+id/iv_item_folder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="16dp"
             tools:ignore="ContentDescription"
             tools:src="@drawable/ic_folder_black_32dp" />
 
