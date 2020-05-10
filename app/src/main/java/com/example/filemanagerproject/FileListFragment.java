@@ -28,6 +28,7 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
     private              TextView     pathTv;
 
     private static void copy(File src, File dest) throws IOException {
+
         //Check if sourceFolder is a directory or file
         //If sourceFolder is file; then copy the file directly to new location
         if (src.isDirectory()) {
@@ -75,16 +76,17 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
         view         = inflater.inflate(R.layout.fragment_files, container, false);
         recyclerView = view.findViewById(R.id.rv_files);
         pathTv       = view.findViewById(R.id.tv_files_path);
+        File currentFolder = new File(path);
 
-        File   currentFolder = new File(path);
-        File[] files         = currentFolder.listFiles();
+        if (StorageHelper.isExternalStorageReadable()) {
+
+            File[] files = currentFolder.listFiles();
+            adapter = new FileAdapter(Arrays.asList(files), this);
+            recyclerView.setAdapter(adapter);
+        }
 
         pathTv.setText(currentFolder.getName().equalsIgnoreCase("files") ? "External Storage" : currentFolder.getName());
-
-        adapter = new FileAdapter(Arrays.asList(files), this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        recyclerView.setAdapter(adapter);
-
         view.findViewById(R.id.im_files_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { getActivity().onBackPressed(); }
@@ -106,6 +108,8 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
 
     @Override
     public void onItemDeleteClick(File file) {
+        if (!StorageHelper.isExternalStorageWritable())
+            return;
         if (file.delete()) {
             adapter.deleteItem(file);
         }
@@ -113,6 +117,8 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
 
     @Override
     public void onItemCopyClick(File file) {
+        if (!StorageHelper.isExternalStorageWritable())
+            return;
         try {
             copy(file, getDestinationFile(file.getName()));
             Toast.makeText(getContext(), "file is copied", Toast.LENGTH_LONG).show();
@@ -124,6 +130,8 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
 
     @Override
     public void onItemMoveClick(File file) {
+        if (!StorageHelper.isExternalStorageWritable())
+            return;
         try {
             copy(file, getDestinationFile(file.getName()));
             onItemDeleteClick(file);

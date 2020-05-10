@@ -22,10 +22,10 @@ public class MainActivity extends AppCompatActivity implements AddFolderDialog.C
             }
         });
 
-
-        //        getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        if (StorageHelper.isExternalStorageReadable())
+            listFiles(getExternalFilesDir(null).getPath(), false);
         //        File externalFilesDir = getExternalFilesDir(null);
-        listFiles(getExternalFilesDir(null).getPath(), false);
+        //        getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
     }
 
     public void listFiles(String path, boolean addToBackStack) {
