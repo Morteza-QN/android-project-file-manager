@@ -3,4 +3,6 @@
     <string name="title_dialog">Add New Folder</string>
     <string name="create">Create</string>
     <string name="hint_enter_folder_name">Enter folder name</string>
+    <string name="delete">Delete</string>
+    <string name="move">Move</string>
 </resources>
