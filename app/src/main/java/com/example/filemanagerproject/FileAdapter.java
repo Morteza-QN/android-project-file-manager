@@ -18,11 +18,13 @@ import java.util.List;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder> {
     private List<File>            files;
+    private List<File>            filterFiles;
     private FileItemEventListener eventListener;
 
     public FileAdapter(List<File> files, FileItemEventListener eventListener) {
         this.files         = new ArrayList<>(files);
         this.eventListener = eventListener;
+        this.filterFiles   = this.files;
     }
 
     @NonNull
@@ -32,10 +34,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FileViewHolder holder, int position) { holder.bindFile(files.get(position)); }
+    public void onBindViewHolder(@NonNull FileViewHolder holder, int position) {
+        holder.bindFile(filterFiles.get(position));
+    }
 
     @Override
-    public int getItemCount() { return files.size(); }
+    public int getItemCount() { return filterFiles.size(); }
 
     public void addItem(File file) {
         files.add(0, file);
@@ -48,6 +52,22 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
             files.remove(file);
             notifyItemRemoved(index);
         }
+    }
+
+    public void searchItem(String query) {
+        if (!query.isEmpty()) {
+            List<File> result = new ArrayList<>();
+            for (File file : files) {
+                if (file.getName().toLowerCase().contains(query.toLowerCase())) { result.add(file); }
+            }
+            filterFiles = result;
+            notifyDataSetChanged();
+        }
+        else {
+            filterFiles = files;
+            notifyDataSetChanged();
+        }
+
     }
 
     public interface FileItemEventListener {
@@ -72,11 +92,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
             moreIv     = itemView.findViewById(R.id.iv_item_more);
         }
 
+
         void bindFile(final File file) {
-            if (file.isDirectory())
-                fileIcon.setImageResource(R.drawable.ic_folder_black_32dp);
-            else
-                fileIcon.setImageResource(R.drawable.ic_file_black_32dp);
+            if (file.isDirectory()) { fileIcon.setImageResource(R.drawable.ic_folder_black_32dp); }
+            else { fileIcon.setImageResource(R.drawable.ic_file_black_32dp); }
             fileNameTv.setText(file.getName());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,4 +129,5 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         }
 
     }
+
 }

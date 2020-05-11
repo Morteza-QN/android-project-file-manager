@@ -156,4 +156,10 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
             }
         }
     }
+
+    public void search(String query) {
+        if (adapter != null) {
+            adapter.searchItem(query);
+        }
+    }
 }
