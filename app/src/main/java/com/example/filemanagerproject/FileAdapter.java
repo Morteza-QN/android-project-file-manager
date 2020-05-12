@@ -20,12 +20,15 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     private List<File>            files;
     private List<File>            filterFiles;
     private FileItemEventListener eventListener;
-    private ViewType              viewType = ViewType.ROW;
+    private ViewType              viewType;
 
     public FileAdapter(List<File> files, FileItemEventListener eventListener) {
         this.files         = new ArrayList<>(files);
         this.eventListener = eventListener;
         this.filterFiles   = this.files;
+        if (viewType != null) {
+            viewType = ViewType.ROW;
+        }
     }
 
     @NonNull

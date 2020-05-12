@@ -20,13 +20,15 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class FileListFragment extends Fragment implements FileAdapter.FileItemEventListener {
-    private static final String            KEY_path = "path";
+    private static final String            KEY_PATH      = "path";
+    private static final String            KEY_VIEW_TYPE = "viewType";
     private              String            path;
     private              FileAdapter       adapter;
     private              View              view;
     private              RecyclerView      recyclerView;
     private              TextView          pathTv;
     private              GridLayoutManager layoutManager;
+    private              ViewType          viewType;
 
     private static void copy(File src, File dest) throws IOException {
 
@@ -68,7 +70,8 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        path = getArguments().getString(KEY_path);
+        path     = getArguments().getString(KEY_PATH);
+        viewType = getArguments().getInt(KEY_VIEW_TYPE) == ViewType.GRID.getValue() ? ViewType.GRID : ViewType.ROW;
     }
 
     @Nullable
@@ -80,14 +83,14 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
         File currentFolder = new File(path);
 
         if (StorageHelper.isExternalStorageReadable()) {
-
             File[] files = currentFolder.listFiles();
             adapter = new FileAdapter(Arrays.asList(files), this);
             recyclerView.setAdapter(adapter);
         }
 
         pathTv.setText(currentFolder.getName().equalsIgnoreCase("files") ? "External Storage" : currentFolder.getName());
-        layoutManager = new GridLayoutManager(getContext(), 1, RecyclerView.VERTICAL, false);
+        layoutManager = new GridLayoutManager(getContext(), viewType.getValue(), RecyclerView.VERTICAL, false);
+        setViewType(viewType);
         recyclerView.setLayoutManager(layoutManager);
         view.findViewById(R.id.im_files_back).setOnClickListener(new View.OnClickListener() {
             @Override

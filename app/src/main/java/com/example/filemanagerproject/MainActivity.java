@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 
 public class MainActivity extends AppCompatActivity implements AddFolderDialog.Callback {
-
+    private ViewType viewType = ViewType.ROW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +61,13 @@ public class MainActivity extends AppCompatActivity implements AddFolderDialog.C
                         case R.id.btn_main_list:
                             if (isChecked) {
                                 ((FileListFragment) fragment).setViewType(ViewType.ROW);
+                                viewType = ViewType.ROW;
                             }
                             break;
                         case R.id.btn_main_grid:
                             if (isChecked) {
                                 ((FileListFragment) fragment).setViewType(ViewType.GRID);
+                                viewType = ViewType.GRID;
                             }
                             break;
                     }
@@ -78,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements AddFolderDialog.C
         FileListFragment fileListFragment = new FileListFragment();
         Bundle           bundle           = new Bundle();
         bundle.putString("path", path);
+        bundle.putInt("viewType", viewType.getValue());
+
         fileListFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

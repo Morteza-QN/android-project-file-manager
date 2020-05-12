@@ -2,7 +2,7 @@ package com.example.filemanagerproject;
 
 public enum ViewType {
 
-    ROW(0), GRID(1);
+    ROW(1), GRID(2);
 
     private int value;
 
@@ -10,8 +10,5 @@ public enum ViewType {
         this.value = value;
     }
 
-
-    public int getValue() {
-        return value;
-    }
+    public int getValue() { return value; }
 }
