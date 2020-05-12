@@ -20,6 +20,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     private List<File>            files;
     private List<File>            filterFiles;
     private FileItemEventListener eventListener;
+    private ViewType              viewType = ViewType.ROW;
 
     public FileAdapter(List<File> files, FileItemEventListener eventListener) {
         this.files         = new ArrayList<>(files);
@@ -30,7 +31,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     @NonNull
     @Override
     public FileViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new FileViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_files, parent, false));
+        return new FileViewHolder(LayoutInflater.from(parent.getContext()).inflate(
+                viewType == ViewType.ROW.getValue() ? R.layout.item_files : R.layout.item_file_grid, parent, false));
     }
 
     @Override
@@ -39,7 +41,15 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     }
 
     @Override
+    public int getItemViewType(int position) { return viewType.getValue(); }
+
+    @Override
     public int getItemCount() { return filterFiles.size(); }
+
+    public void setViewType(ViewType viewType) {
+        this.viewType = viewType;
+        notifyDataSetChanged();
+    }
 
     public void addItem(File file) {
         files.add(0, file);
@@ -127,7 +137,5 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
                 }
             });
         }
-
     }
-
 }

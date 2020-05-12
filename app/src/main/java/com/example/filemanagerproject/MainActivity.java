@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
+
 public class MainActivity extends AppCompatActivity implements AddFolderDialog.Callback {
 
 
@@ -25,8 +27,7 @@ public class MainActivity extends AppCompatActivity implements AddFolderDialog.C
             }
         });
 
-        if (StorageHelper.isExternalStorageReadable())
-            listFiles(getExternalFilesDir(null).getPath(), false);
+        if (StorageHelper.isExternalStorageReadable()) { listFiles(getExternalFilesDir(null).getPath(), false); }
         //        File externalFilesDir = getExternalFilesDir(null);
         //        getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
 
@@ -50,7 +51,27 @@ public class MainActivity extends AppCompatActivity implements AddFolderDialog.C
 
             }
         });
-
+        MaterialButtonToggleGroup toggleGroup = findViewById(R.id.toggleGroup_main);
+        toggleGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
+            @Override
+            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame_main_fragmentContainer);
+                if (fragment instanceof FileListFragment) {
+                    switch (checkedId) {
+                        case R.id.btn_main_list:
+                            if (isChecked) {
+                                ((FileListFragment) fragment).setViewType(ViewType.ROW);
+                            }
+                            break;
+                        case R.id.btn_main_grid:
+                            if (isChecked) {
+                                ((FileListFragment) fragment).setViewType(ViewType.GRID);
+                            }
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     public void listFiles(String path, boolean addToBackStack) {
@@ -61,8 +82,7 @@ public class MainActivity extends AppCompatActivity implements AddFolderDialog.C
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_main_fragmentContainer, fileListFragment);
-        if (addToBackStack)
-            transaction.addToBackStack(null);
+        if (addToBackStack) { transaction.addToBackStack(null); }
         transaction.commit();
     }
 
@@ -71,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements AddFolderDialog.C
     @Override
     public void onCreateBtnClick(String folderName) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame_main_fragmentContainer);
-        if (fragment instanceof FileListFragment)
-            ((FileListFragment) fragment).createNewFolder(folderName);
+        if (fragment instanceof FileListFragment) { ((FileListFragment) fragment).createNewFolder(folderName); }
     }
 }

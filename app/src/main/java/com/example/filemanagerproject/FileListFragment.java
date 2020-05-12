@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -20,12 +20,13 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class FileListFragment extends Fragment implements FileAdapter.FileItemEventListener {
-    private static final String       KEY_path = "path";
-    private              String       path;
-    private              FileAdapter  adapter;
-    private              View         view;
-    private              RecyclerView recyclerView;
-    private              TextView     pathTv;
+    private static final String            KEY_path = "path";
+    private              String            path;
+    private              FileAdapter       adapter;
+    private              View              view;
+    private              RecyclerView      recyclerView;
+    private              TextView          pathTv;
+    private              GridLayoutManager layoutManager;
 
     private static void copy(File src, File dest) throws IOException {
 
@@ -86,7 +87,8 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
         }
 
         pathTv.setText(currentFolder.getName().equalsIgnoreCase("files") ? "External Storage" : currentFolder.getName());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        layoutManager = new GridLayoutManager(getContext(), 1, RecyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
         view.findViewById(R.id.im_files_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { getActivity().onBackPressed(); }
@@ -108,8 +110,7 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
 
     @Override
     public void onItemDeleteClick(File file) {
-        if (!StorageHelper.isExternalStorageWritable())
-            return;
+        if (!StorageHelper.isExternalStorageWritable()) { return; }
         if (file.delete()) {
             adapter.deleteItem(file);
         }
@@ -117,8 +118,7 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
 
     @Override
     public void onItemCopyClick(File file) {
-        if (!StorageHelper.isExternalStorageWritable())
-            return;
+        if (!StorageHelper.isExternalStorageWritable()) { return; }
         try {
             copy(file, getDestinationFile(file.getName()));
             Toast.makeText(getContext(), "file is copied", Toast.LENGTH_LONG).show();
@@ -130,8 +130,7 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
 
     @Override
     public void onItemMoveClick(File file) {
-        if (!StorageHelper.isExternalStorageWritable())
-            return;
+        if (!StorageHelper.isExternalStorageWritable()) { return; }
         try {
             copy(file, getDestinationFile(file.getName()));
             onItemDeleteClick(file);
@@ -160,6 +159,14 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
     public void search(String query) {
         if (adapter != null) {
             adapter.searchItem(query);
+        }
+    }
+
+    public void setViewType(ViewType viewType) {
+        if (adapter != null) {
+            adapter.setViewType(viewType);
+            if (viewType == ViewType.GRID) {layoutManager.setSpanCount(2);}
+            else {layoutManager.setSpanCount(1);}
         }
     }
 }

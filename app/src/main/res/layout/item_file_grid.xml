@@ -26,7 +26,7 @@
             app:srcCompat="@drawable/ic_more_vertical_black_24dp" />
 
         <ImageView
-            android:id="@+id/iv_item_folder_"
+            android:id="@+id/iv_item_folder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
